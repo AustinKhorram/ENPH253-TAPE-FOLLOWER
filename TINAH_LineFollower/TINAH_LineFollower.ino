@@ -13,14 +13,14 @@
 #define MAX_BWD_SPEED -255
 #define BRAKE_SPEED 0
 
-#define FWD_OFFSET 20 
-#define BWD_OFFSET 40
+#define FWD_OFFSET 20
+#define BWD_OFFSET 20
 #define TURN_OFFSET_LOW_SLOW 60 // For turning at low speed
 #define TURN_OFFSET_HIGH_SLOW 40
 #define TURN_OFFSET_LOW_FAST 40 // For turning at high speed
 #define TURN_OFFSET_HIGH_FAST 20
 
-#define HIGH_THRESHOLD 600
+#define HIGH_THRESHOLD 75
 #define LOW_THRESHOLD 300
 
 #define LOW_LIGHT 0
@@ -60,9 +60,9 @@ void loop() {
 }
 
 int compareThreshold(int tmp_value) {
-  if (tmp_value > HIGH_THRESHOLD)
+  if (tmp_value < LOW_THRESHOLD)
     return HIGH_LIGHT;
-  else if (tmp_value > LOW_THRESHOLD)
+  else if (tmp_value < HIGH_THRESHOLD)
     return MED_LIGHT;
   else 
     return LOW_LIGHT;
@@ -98,7 +98,7 @@ void moveForward() {
   LCD.setCursor(0,0); LCD.print("FORWARD");
 }
 
-void moveRightSlow() {
+void moveLeftSlow() {
   currentRightSpeed = MAX_BWD_SPEED + TURN_OFFSET_LOW_SLOW;
   currentLeftSpeed  = MAX_FWD_SPEED - TURN_OFFSET_HIGH_SLOW;
   
@@ -109,7 +109,7 @@ void moveRightSlow() {
   LCD.setCursor(0,0); LCD.print("RIGHT SLOW");
 }
 
-void moveLeftSlow() {
+void moveRightSlow() {
   currentLeftSpeed  = MAX_BWD_SPEED + TURN_OFFSET_LOW_SLOW;
   currentRightSpeed = MAX_FWD_SPEED - TURN_OFFSET_HIGH_SLOW;
   
@@ -120,7 +120,7 @@ void moveLeftSlow() {
   LCD.setCursor(0,0); LCD.print("LEFT SLOW");
 }
 
-void moveRightFast() {
+void moveLeftFast() {
   currentRightSpeed = MAX_BWD_SPEED + TURN_OFFSET_LOW_FAST;
   currentLeftSpeed  = MAX_FWD_SPEED - TURN_OFFSET_HIGH_FAST;
   
@@ -131,7 +131,7 @@ void moveRightFast() {
   LCD.setCursor(0,0); LCD.print("RIGHT FAST");
 }
 
-void moveLeftFast() {
+void moveRightFast() {
   currentLeftSpeed  = MAX_BWD_SPEED + TURN_OFFSET_LOW_FAST;
   currentRightSpeed = MAX_FWD_SPEED - TURN_OFFSET_HIGH_FAST;
   
@@ -150,7 +150,7 @@ void moveBacktrack() {
   int speedDiff = currentRightSpeed - currentLeftSpeed;
 
   // Right speed > Left speed condition (moving left direction)
-  if (speedDiff > 0) {
+  /*if (speedDiff > 0) {
     motor.speed(MOTOR_R, MAX_BWD_SPEED + TURN_OFFSET_LOW_SLOW);
     motor.speed(MOTOR_L, BRAKE_SPEED);
 
@@ -168,14 +168,20 @@ void moveBacktrack() {
     currentLeftSpeed = MAX_BWD_SPEED + TURN_OFFSET_LOW_SLOW;
   
   // If both speeds are equal, reverses motors to try and backtrack to where tape was
-  } else {
-    motor.speed(MOTOR_R, MAX_BWD_SPEED + BWD_OFFSET);
-    motor.speed(MOTOR_L, MAX_BWD_SPEED + BWD_OFFSET);
+  } else { */
+    // Set speed to 0 to allow realignment process to begin
+    motor.speed(MOTOR_R, BRAKE_SPEED);
+    motor.speed(MOTOR_L, BRAKE_SPEED);
+    delay(100); // Short delay for controlled realignment process
 
-    // Track current speeds
+    // Short BWD reverse pulse
+    motor.speed(MOTOR_R, MAX_BWD_SPEED);
+    motor.speed(MOTOR_L, MAX_BWD_SPEED);
+    delay(20); // Short delay for controlled realignment process
+    
     currentRightSpeed = MAX_BWD_SPEED + BWD_OFFSET; 
     currentLeftSpeed = MAX_BWD_SPEED + BWD_OFFSET;
-  }
+  //}
 
   LCD.clear(); LCD.home();
   LCD.setCursor(0,0); LCD.print("REALIGNING");
