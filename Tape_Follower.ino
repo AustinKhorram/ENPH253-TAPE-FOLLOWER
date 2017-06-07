@@ -11,10 +11,12 @@
 #define MOTOR_R 1
 #define MOTOR_L 0
 
-#define SPEED_OFFSET 20 // needs calibration
+#define SPEED_OFFSET 70 // needs calibration
 
-#define THRESHOLD_R 500 // needs calibration
-#define THRESHOLD_L 500 // needs calibration
+#define THRESHOLD_R 400 // needs calibration
+#define THRESHOLD_L 400 // needs calibration
+
+// haha fk u keeno.
 
 // Global variables to keep track of current (most recent) L and R motor speeds
 int currentLeftSpeed = 0;
@@ -68,29 +70,31 @@ void moveDirection(int tmp_R, int tmp_L) {
 
   // Right move condition (too far left)
   else if(tmp_R == LOW && tmp_L == HIGH) {
+    
+    motor.speed(MOTOR_R, BRAKE_SPEED);
+    motor.speed(MOTOR_L, BRAKE_SPEED);
+    delay(20); // Short delay for controlled realignment process
 
     // Set left motor FASTER than right motor to realign with tape (move right)
-    motor.speed(MOTOR_R, MAX_FWD_SPEED - SPEED_OFFSET); // DIFFERENCES MAY NEED CALIBRATION
-    motor.speed(MOTOR_L, MAX_FWD_SPEED);
-
-    // Track current speeds
-    currentRightSpeed = (MAX_FWD_SPEED - SPEED_OFFSET); 
-    currentLeftSpeed = (MAX_FWD_SPEED);
+    motor.speed(MOTOR_L, MAX_BWD_SPEED + SPEED_OFFSET); // DIFFERENCES MAY NEED CALIBRATION
+    motor.speed(MOTOR_R, MAX_FWD_SPEED - SPEED_OFFSET);
+    delay(100); // Short delay for controlled realignment process
 
     LCD.clear(); LCD.home();
     LCD.setCursor(0,0); LCD.print("RIGHT"); // TINAH display current action
   }
 
   // Left move condition (too far right)
-  else if(tmp_R == HIGH && tmp_L == LOW) {
+  else if(tmp_R == HIGH && tmp_L == LOW) { 
+
+    motor.speed(MOTOR_R, BRAKE_SPEED);
+    motor.speed(MOTOR_L, BRAKE_SPEED);
+    delay(20); // Short delay for controlled realignment process
 
     // Set right motor FASTER than left motor to realign with tape (move left)
-    motor.speed(MOTOR_R, MAX_FWD_SPEED); // DIFFERENCES MAY NEED CALIBRATION
+    motor.speed(MOTOR_R, MAX_BWD_SPEED + SPEED_OFFSET); // DIFFERENCES MAY NEED CALIBRATION
     motor.speed(MOTOR_L, MAX_FWD_SPEED - SPEED_OFFSET);
-
-    // Track current speeds
-    currentRightSpeed = (MAX_FWD_SPEED); 
-    currentLeftSpeed = (MAX_FWD_SPEED - SPEED_OFFSET);
+    delay(100); // Short delay for controlled realignment process
 
     LCD.clear(); LCD.home();
     LCD.setCursor(0,0); LCD.print("LEFT"); // TINAH display current action
@@ -102,37 +106,12 @@ void moveDirection(int tmp_R, int tmp_L) {
     // Set speed to 0 to allow realignment process to begin
     motor.speed(MOTOR_R, BRAKE_SPEED);
     motor.speed(MOTOR_L, BRAKE_SPEED);
-    delay(200);
+    delay(100); // Short delay for controlled realignment process
 
-    int speedDiff = currentRightSpeed - currentLeftSpeed;
-
-    // Right speed > Left speed condition (moving left direction)
-    if (speedDiff > 0) {
-      motor.speed(MOTOR_R, MAX_BWD_SPEED + SPEED_OFFSET);
-      motor.speed(MOTOR_L, BRAKE_SPEED);
-
-      // Track current speeds
-      currentRightSpeed = (MAX_BWD_SPEED + SPEED_OFFSET); 
-      currentLeftSpeed = (BRAKE_SPEED);
-
-    // Left speed > Right speed condition (moving right direction)
-    } else if (speedDiff < 0) {
-      motor.speed(MOTOR_R, BRAKE_SPEED);
-      motor.speed(MOTOR_L, MAX_BWD_SPEED + SPEED_OFFSET);
-
-      // Track current speeds
-      currentRightSpeed = (BRAKE_SPEED); 
-      currentLeftSpeed = (MAX_BWD_SPEED + SPEED_OFFSET);
-    
-    // If both speeds are equal, reverses motors to try and backtrack to where tape was
-    } else {
-      motor.speed(MOTOR_R, MAX_BWD_SPEED + SPEED_OFFSET);
-      motor.speed(MOTOR_L, MAX_BWD_SPEED + SPEED_OFFSET);
-
-      // Track current speeds
-      currentRightSpeed = (MAX_BWD_SPEED + SPEED_OFFSET); 
-      currentLeftSpeed = (MAX_BWD_SPEED + SPEED_OFFSET);
-    }
+    // Short BWD reverse pulse
+    motor.speed(MOTOR_R, MAX_BWD_SPEED);
+    motor.speed(MOTOR_L, MAX_BWD_SPEED);
+    delay(20); // Short delay for controlled realignment process
 
     LCD.clear(); LCD.home();
     LCD.setCursor(0,0); LCD.print("REALIGNING"); // TINAH display current action
