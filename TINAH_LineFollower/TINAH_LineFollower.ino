@@ -141,13 +141,13 @@ void moveRightFast() {
 void moveBacktrack() {
   int speedDiff = currentRightSpeed - currentLeftSpeed;
   
-  if (speedDiff > 0) // R > L
+  if (speedDiff > 0)  {// R > L
     moveLeftFast();
     delay(TURN_RA_DELAY);
-  else if (speedDiff < 0) { // L > R
+  } else if (speedDiff < 0) { // L > R
     moveRightFast();
     delay(TURN_RA_DELAY);
-  else {
+  } else {
     currentRightSpeed = MAX_BWD_SPEED + BWD_OFFSET; 
     currentLeftSpeed  = MAX_BWD_SPEED + BWD_OFFSET;
     
@@ -167,4 +167,3 @@ void moveBrake() {
   LCD.clear(); LCD.home();
   LCD.setCursor(0,0); LCD.print("ERROR - BRAKE");
 }
-
