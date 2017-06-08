@@ -15,10 +15,10 @@
 
 #define FWD_OFFSET 20
 #define BWD_OFFSET 20
-#define TURN_OFFSET_LOW_SLOW 60
-#define TURN_OFFSET_HIGH_SLOW 40
-#define TURN_OFFSET_LOW_FAST 40
-#define TURN_OFFSET_HIGH_FAST 20
+#define TURN_OFFSET_BWD_SLOW 60
+#define TURN_OFFSET_FWD_SLOW 40
+#define TURN_OFFSET_BWD_FAST 40
+#define TURN_OFFSET_FWD_FAST 20
 
 #define HIGH_THRESHOLD 300
 #define LOW_THRESHOLD 50
@@ -95,8 +95,8 @@ void moveForward() {
 }
 
 void moveLeftSlow() {
-  currentRightSpeed = MAX_BWD_SPEED + TURN_OFFSET_LOW_SLOW;
-  currentLeftSpeed  = MAX_FWD_SPEED - TURN_OFFSET_HIGH_SLOW;
+  currentRightSpeed = MAX_BWD_SPEED + TURN_OFFSET_BWD_SLOW;
+  currentLeftSpeed  = MAX_FWD_SPEED - TURN_OFFSET_FWD_SLOW;
   
   motor.speed(MOTOR_R, currentRightSpeed);
   motor.speed(MOTOR_L, currentLeftSpeed);
@@ -106,8 +106,8 @@ void moveLeftSlow() {
 }
 
 void moveRightSlow() {
-  currentLeftSpeed  = MAX_BWD_SPEED + TURN_OFFSET_LOW_SLOW;
-  currentRightSpeed = MAX_FWD_SPEED - TURN_OFFSET_HIGH_SLOW;
+  currentLeftSpeed  = MAX_BWD_SPEED + TURN_OFFSET_BWD_SLOW;
+  currentRightSpeed = MAX_FWD_SPEED - TURN_OFFSET_FWD_SLOW;
   
   motor.speed(MOTOR_L, currentLeftSpeed);
   motor.speed(MOTOR_R, currentRightSpeed);
@@ -117,8 +117,8 @@ void moveRightSlow() {
 }
 
 void moveLeftFast() {
-  currentRightSpeed = MAX_BWD_SPEED + TURN_OFFSET_LOW_FAST;
-  currentLeftSpeed  = MAX_FWD_SPEED - TURN_OFFSET_HIGH_FAST;
+  currentRightSpeed = MAX_BWD_SPEED + TURN_OFFSET_BWD_FAST;
+  currentLeftSpeed  = MAX_FWD_SPEED - TURN_OFFSET_FWD_FAST;
   
   motor.speed(MOTOR_R, currentRightSpeed);
   motor.speed(MOTOR_L, currentLeftSpeed);
@@ -128,8 +128,8 @@ void moveLeftFast() {
 }
 
 void moveRightFast() {
-  currentLeftSpeed  = MAX_BWD_SPEED + TURN_OFFSET_LOW_FAST;
-  currentRightSpeed = MAX_FWD_SPEED - TURN_OFFSET_HIGH_FAST;
+  currentLeftSpeed  = MAX_BWD_SPEED + TURN_OFFSET_BWD_FAST;
+  currentRightSpeed = MAX_FWD_SPEED - TURN_OFFSET_FWD_FAST;
   
   motor.speed(MOTOR_L, currentLeftSpeed);
   motor.speed(MOTOR_R, currentRightSpeed);
